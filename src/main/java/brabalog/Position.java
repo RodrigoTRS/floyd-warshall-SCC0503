@@ -20,7 +20,7 @@ public class Position {
     }
 
     public int getY() {
-        return this.X;
+        return this.Y;
     }
 
     public void setX(int x) {

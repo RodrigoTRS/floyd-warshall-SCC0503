@@ -64,16 +64,13 @@ public class BrabaLog {
             int x2 = Integer.parseInt(stringAux2[1]);
             int y2 = Integer.parseInt(stringAux1[2]);
 
-            int minusX = x1 - x2;
-            int minusY = y1 - y2;
-
-            int powMinusX = minusX * minusX;
-            int powMinusY = minusY * minusY;
-
-            float weight = (float) Math.sqrt(powMinusX + powMinusY); // Distância euclidiana
-
             Position source = new Position(x1, y1);
             Position destination = new Position(x2, y2);
+
+            int minusX = (x1 - x2) * (x1 - x2);
+            int minusY = (y1 - y2) * (y1 - y2);
+
+            float weight = (float) Math.sqrt(minusX + minusY); // Distância euclidiana
 
             if (cityIndexByPosition(source) != -1) {
                 if (cityIndexByPosition(destination) != -1) {
@@ -93,27 +90,74 @@ public class BrabaLog {
         //
         graphController.traversalStrategy.traverseGraph(graphController.g.getVertices().get(0));
 
+        System.out.println("\n");
+
 //        System.out.println(graphController.g.toString());
 
+        City mostCentralCity = new City();
+        City mostPeriphericalCity = new City();
+        City mostDistanceFromMostPeripherical = new City();
+
+        // Most center vertex
+        //
+        //
         if (graphController.traversalStrategy instanceof FloydWarshallTraversal) {
-
-            // Most center vertex
-            //
-            //
-            City mostCentralCity = (City) graphController.g.getCentermostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
-            System.out.println(mostCentralCity.getPosition().toString());
-
-
-            // Most peripherical vertex ---------------- TODO
-            //
-            //
-//            if (graphController.g instanceof DigraphMatrix) {
-//                City mostPeriphericalCity = (City)((DigraphMatrix) graphController.g).getFarthestCity(cityIndexByPosition(mostCentralCity.getPosition()));
-//                System.out.println(mostPeriphericalCity.getPosition().toString());
-//            }
-
+            mostCentralCity = (City) graphController.g.getCentermostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
         }
+        
+        // Most peripherical vertex 
+        //
+        //
+        float maxDistanceMostPeripherical = 0;
+        for (int i = 0; i < graphController.g.getVertices().size(); i++) {
+
+            City tempCity = (City)graphController.g.getVertices().get(i);
+
+            float tempDistance = tempCity.calculateDistance(mostCentralCity.getPosition());
+
+            System.out.println(tempDistance + "\n");
+
+            if (tempDistance > maxDistanceMostPeripherical) {
+                maxDistanceMostPeripherical = tempDistance;
+                mostPeriphericalCity = tempCity;
+            }
+            
+        }
+
+        System.out.println("\n");
+
+        // Most distance from most peripherical
+        //
+        //
+        float maxDistanceMostDistanceFromMostPeripherical = 0;
+        for (int i = 0; i < graphController.g.getVertices().size(); i++) {
+
+            City tempCity = (City)graphController.g.getVertices().get(i);
+
+            float tempDistance = tempCity.calculateDistance(mostPeriphericalCity.getPosition());
+
+            System.out.println(tempDistance + "\n");
+
+            if (tempDistance > maxDistanceMostDistanceFromMostPeripherical) {
+                maxDistanceMostDistanceFromMostPeripherical = tempDistance;
+                mostDistanceFromMostPeripherical = tempCity;
+            }
+            
+        }
+            
+        System.out.println("\n");
+        System.out.println(mostCentralCity.getPosition().toString());
+        System.out.println(mostPeriphericalCity.getPosition().toString());
+        System.out.println(mostDistanceFromMostPeripherical.getPosition().toString());
+
+        stdin.close();
     }
+
+
+
+
+
+
 
     private static int cityIndexByPosition(Position pos) {
         for (int i = 0; i < graphController.g.getVertices().size(); i++) {
