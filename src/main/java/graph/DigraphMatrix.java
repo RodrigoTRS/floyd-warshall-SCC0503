@@ -6,6 +6,8 @@ import guru.nidi.graphviz.engine.Graphviz;
 import guru.nidi.graphviz.model.MutableGraph;
 import java.io.File;
 import java.io.IOException;
+import java.text.DecimalFormat;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -145,6 +147,7 @@ public class DigraphMatrix extends AbstractGraph
 
     @Override
     public String toString() {
+        DecimalFormat df = new DecimalFormat("#.00");
         var s = new StringBuilder();
         for (var i = 0; i < getNumberOfVertices(); i++)
         {
@@ -153,7 +156,7 @@ public class DigraphMatrix extends AbstractGraph
             {
                 if(edgeExists(getVertices().get(i), getVertices().get(j)))
                 {
-                    s.append(getAdjacencyMatrix()[i][j].getWeight()).append(" ");
+                    s.append((int)getAdjacencyMatrix()[i][j].getWeight()).append(".0 ");
                 }
                 else
                 {
@@ -204,6 +207,27 @@ public class DigraphMatrix extends AbstractGraph
             return Float.POSITIVE_INFINITY;
         }
     }
+
+//    Most peripherical vertex ---------------- TODO
+//    public Vertex getFarthestCity(int mostCentralIndex) {
+//
+//        float maxDistance = 0;
+//        int farthestIndex = 0;
+//
+//        for (int i = 0; i < this.getVertices().size(); i++) {
+//            Edge distance = getAdjacencyMatrix()[mostCentralIndex][i];
+//
+//            if(distance != null) {
+//
+//                if (distance.getWeight() > maxDistance) {
+//                    maxDistance = distance.getWeight();
+//                    farthestIndex = i;
+//                }
+//            }
+//        }
+//
+//        return  this.getVertices().get(farthestIndex);
+//    }
 
     public Edge[][] getAdjacencyMatrix()
     {

@@ -8,8 +8,7 @@ public class BrabaLog {
 
     private static GraphController graphController;
 
-    public static void main(String[] args)
-    {
+    public static void main(String[] args) {
 
         // Inicialização do Scanner que será utilizado para ler a
         // entrada padrão.
@@ -32,14 +31,18 @@ public class BrabaLog {
         //
         //
 //        System.out.println("Enter all of the " + numberOfCities + " cities: ");
-        for(int i = 0 ; i < numberOfCities ; i++){
-            String[] positions = stdin.nextLine().split(",");
+        for (int i = 0; i < numberOfCities; i++) {
+
             String cityName = "Cidade " + i;
-            graphController.vertices.add(new City(cityName, Integer.parseInt(positions[0]), Integer.parseInt(positions[1])));
+
+            String[] positions = stdin.nextLine().split(",");
+            int x1 = Integer.parseInt(positions[0]);
+            int y1 = Integer.parseInt(positions[1]);
+
+            graphController.vertices.add(new City(cityName, x1, y1));
         }
 
         graphController.g = new DigraphMatrix(graphController.vertices);
-        graphController.traversalStrategy = new FloydWarshallTraversal(graphController.g);
 
         // Solicita a entrada do numero de avenidas.
         //
@@ -51,47 +54,65 @@ public class BrabaLog {
         //
         //
 //        System.out.println("Enter all of the " + numberOfHighways + " highways: ");
-        for(int i = 0 ; i < numberOfHighways ; i++){
+        for (int i = 0; i < numberOfHighways; i++) {
 
-            String[] stringAux1 = stdin.nextLine().split(",");
-            String[] stringAux2 = stringAux1[1].split(":");
+            String[] stringAux1 = stdin.nextLine().split(","); // str1[0](x1): 0, str1[1]: 0:4, str1[2]: 3(y2)
+            String[] stringAux2 = stringAux1[1].split(":"); // str2[0](y1): 0, str2[1](x2): 0:4,
 
-            Position source = new Position(Integer.parseInt(stringAux1[0]), Integer.parseInt(stringAux2[0]));
-            Position destination = new Position(Integer.parseInt(stringAux2[1]), Integer.parseInt(stringAux1[2]));
+            int x1 = Integer.parseInt(stringAux1[0]);
+            int y1 = Integer.parseInt(stringAux2[0]);
+            int x2 = Integer.parseInt(stringAux2[1]);
+            int y2 = Integer.parseInt(stringAux1[2]);
+
+            int minusX = x1 - x2;
+            int minusY = y1 - y2;
+
+            int powMinusX = minusX * minusX;
+            int powMinusY = minusY * minusY;
+
+            float weight = (float) Math.sqrt(powMinusX + powMinusY); // Distância euclidiana
+
+            Position source = new Position(x1, y1);
+            Position destination = new Position(x2, y2);
 
             if (cityIndexByPosition(source) != -1) {
                 if (cityIndexByPosition(destination) != -1) {
                     graphController.g.addEdge(
                             graphController.g.getVertices().get(cityIndexByPosition(source)),
-                            graphController.g.getVertices().get(cityIndexByPosition(destination))
+                            graphController.g.getVertices().get(cityIndexByPosition(destination)),
+                            weight
                     );
                 }
             }
         }
 
-        System.out.println(graphController.g.getVertices());
-        System.out.println(graphController.g.toString());
+        graphController.traversalStrategy = new FloydWarshallTraversal(graphController.g);
 
         // Traverse graph
         //
         //
-        graphController.traversalStrategy.traverseGraph(
-                graphController.g.getVertices().get(0)
-        );
+        graphController.traversalStrategy.traverseGraph(graphController.g.getVertices().get(0));
 
-        // Most center vertex
-        //
-        //
+//        System.out.println(graphController.g.toString());
+
         if (graphController.traversalStrategy instanceof FloydWarshallTraversal) {
-            City city = (City)graphController.g.getCentermostVertex(((FloydWarshallTraversal)graphController.traversalStrategy).getDistanceMatrix());
-            System.out.println(city.getPosition().toString());
+
+            // Most center vertex
+            //
+            //
+            City mostCentralCity = (City) graphController.g.getCentermostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
+            System.out.println(mostCentralCity.getPosition().toString());
+
+
+            // Most peripherical vertex ---------------- TODO
+            //
+            //
+//            if (graphController.g instanceof DigraphMatrix) {
+//                City mostPeriphericalCity = (City)((DigraphMatrix) graphController.g).getFarthestCity(cityIndexByPosition(mostCentralCity.getPosition()));
+//                System.out.println(mostPeriphericalCity.getPosition().toString());
+//            }
+
         }
-
-        // Most peripherical vertex
-        //
-        //
-
-
     }
 
     private static int cityIndexByPosition(Position pos) {
