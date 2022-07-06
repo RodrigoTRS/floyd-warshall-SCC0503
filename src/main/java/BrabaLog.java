@@ -102,48 +102,23 @@ public class BrabaLog {
         //
         //
         if (graphController.traversalStrategy instanceof FloydWarshallTraversal) {
-            mostCentralCity = (City) graphController.g.getCentermostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
+            mostCentralCity = (City) graphController.g.getCenterMostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
         }
         
         // Most peripherical vertex 
         //
         //
-        float maxDistanceMostPeripherical = 0;
-        for (int i = 0; i < graphController.g.getVertices().size(); i++) {
-
-            City tempCity = (City)graphController.g.getVertices().get(i);
-
-            float tempDistance = tempCity.calculateDistance(mostCentralCity.getPosition());
-
-            System.out.println(tempDistance + "\n");
-
-            if (tempDistance > maxDistanceMostPeripherical) {
-                maxDistanceMostPeripherical = tempDistance;
-                mostPeriphericalCity = tempCity;
-            }
-            
+        if (graphController.traversalStrategy instanceof FloydWarshallTraversal) {
+            mostPeriphericalCity = (City) graphController.g.getPerifericalMostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix());
         }
 
-        System.out.println("\n");
-
-        // Most distance from most peripherical
+        // Most peripherical vertex
         //
         //
-        float maxDistanceMostDistanceFromMostPeripherical = 0;
-        for (int i = 0; i < graphController.g.getVertices().size(); i++) {
-
-            City tempCity = (City)graphController.g.getVertices().get(i);
-
-            float tempDistance = tempCity.calculateDistance(mostPeriphericalCity.getPosition());
-
-            System.out.println(tempDistance + "\n");
-
-            if (tempDistance > maxDistanceMostDistanceFromMostPeripherical) {
-                maxDistanceMostDistanceFromMostPeripherical = tempDistance;
-                mostDistanceFromMostPeripherical = tempCity;
-            }
-            
+        if (graphController.traversalStrategy instanceof FloydWarshallTraversal) {
+            mostDistanceFromMostPeripherical = (City) graphController.g.getMostDistanceFromPerifericalMostVertex(((FloydWarshallTraversal) graphController.traversalStrategy).getDistanceMatrix(), cityIndexByPosition(mostPeriphericalCity.getPosition()));
         }
+
             
         System.out.println("\n");
         System.out.println(mostCentralCity.getPosition().toString());
@@ -152,11 +127,6 @@ public class BrabaLog {
 
         stdin.close();
     }
-
-
-
-
-
 
 
     private static int cityIndexByPosition(Position pos) {

@@ -56,7 +56,7 @@ public abstract class AbstractGraph implements GraphInterface, Cloneable
         addEdge(source, destination, 1);
     }
 
-    public Vertex getCentermostVertex(float[][] distanceMatrix)
+    public Vertex getCenterMostVertex(float[][] distanceMatrix)
     {
         var maxDistanceInCollumn = new float[distanceMatrix.length];
         Arrays.fill(maxDistanceInCollumn, Float.NEGATIVE_INFINITY);
@@ -74,9 +74,43 @@ public abstract class AbstractGraph implements GraphInterface, Cloneable
         return vertices.get(vertexIndex);
     }
 
+    public Vertex getPerifericalMostVertex(float[][] distanceMatrix)
+    {
+        var maxDistanceInCollumn = new float[distanceMatrix.length];
+        Arrays.fill(maxDistanceInCollumn, Float.NEGATIVE_INFINITY);
+        for (var i = 0; i < distanceMatrix.length; i++)
+        {
+            for (var j = 0; j < distanceMatrix[0].length; j++)
+            {
+                if (maxDistanceInCollumn[i] < distanceMatrix[i][j])
+                {
+                    maxDistanceInCollumn[i] = distanceMatrix[i][j];
+                }
+            }
+        }
+        int vertexIndex = getMaxDistanceIndexInCollumn(maxDistanceInCollumn);
+        return vertices.get(vertexIndex);
+    }
+
+    public Vertex getMostDistanceFromPerifericalMostVertex (float[][] distanceMatrix, int rowIndex)
+    {
+        var maxDistanceInCollumn = new float[distanceMatrix.length];
+        Arrays.fill(maxDistanceInCollumn, Float.NEGATIVE_INFINITY);
+        for (var j = 0; j < distanceMatrix.length; j++)
+        {
+            if (maxDistanceInCollumn[j] < distanceMatrix[rowIndex][j])
+            {
+                maxDistanceInCollumn[j] = distanceMatrix[rowIndex][j];
+            }
+        }
+
+        int vertexIndex = getMaxDistanceIndexInCollumn(maxDistanceInCollumn);
+        return vertices.get(vertexIndex);
+    }
+
     private int getMinDistanceIndexInCollumn(float[] distanceArray)
     {
-        var minIndex = 0;
+        int minIndex = 0;
         float minDistance = distanceArray[0];
         for (var i = 1; i < distanceArray.length; i++)
         {
@@ -87,6 +121,21 @@ public abstract class AbstractGraph implements GraphInterface, Cloneable
             }
         }
         return minIndex;
+    }
+
+    private int getMaxDistanceIndexInCollumn(float[] distanceArray)
+    {
+        int maxIndex = 0;
+        float maxDistance = distanceArray[0];
+        for (var i = 1; i < distanceArray.length; i++)
+        {
+            if(maxDistance < distanceArray[i])
+            {
+                maxDistance = distanceArray[i];
+                maxIndex = i;
+            }
+        }
+        return maxIndex;
     }
 
     public int getIndexOfVertex(Vertex vertex)

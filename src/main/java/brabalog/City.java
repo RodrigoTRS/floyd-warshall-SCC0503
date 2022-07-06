@@ -24,19 +24,6 @@ public class City extends Vertex {
         return this.pos;
     }
 
-    public float calculateDistance (Position pos) {
-
-        int minusX = (this.pos.getX() - pos.getX()) * (this.pos.getX() - pos.getX());
-        System.out.println(this.pos.getX() + " - " + pos.getX() + "ˆ2" + " = " + minusX);
-
-        int minusY = (this.pos.getY() - pos.getY()) * (this.pos.getY() - pos.getY());
-        System.out.println(this.pos.getY() + " - " + pos.getY() + "ˆ2" + " = " + minusY);
-
-        float distance = (float) Math.sqrt(minusX + minusY);
-
-        return distance;
-    }
-
     @Override
     public String toString()
     {

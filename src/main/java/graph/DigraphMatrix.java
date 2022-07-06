@@ -153,7 +153,7 @@ public class DigraphMatrix extends AbstractGraph
             {
                 if(edgeExists(getVertices().get(i), getVertices().get(j)))
                 {
-                    s.append(getAdjacencyMatrix()[i][j].getWeight()).append(".0 ");
+                    s.append(getAdjacencyMatrix()[i][j].getWeight()).append(" ");
                 }
                 else
                 {

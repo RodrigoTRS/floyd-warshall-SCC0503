@@ -60,7 +60,7 @@ public class FloydWarshallTraversal extends TraversalStrategyInterface
                 }
             }
         }
-//        printDistanceMatrix();
+        printDistanceMatrix();
     }
 
     void printDistanceMatrix()
